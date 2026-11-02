@@ -1,4 +1,4 @@
-wname: Build PKHeX 3DS
+name: Build PKHeX 3DS
 
 on:
   workflow_dispatch:

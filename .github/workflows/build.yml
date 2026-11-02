@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     container:
       image: devkitpro/devkitarm:latest
 
@@ -15,34 +16,28 @@ jobs:
       - name: Download project
         uses: actions/checkout@v4
 
-      - name: Diagnose and compile
+      - name: Compile PKHeX
         shell: bash
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=/opt/devkitpro/devkitARM
           export PATH="$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH"
 
-          echo "=== ROOT ==="
-          pwd
-          ls -la
-
-          echo "=== SOURCE FILES ==="
+          echo "=== CHECK SOURCE ==="
           find source -maxdepth 2 -type f -print
-
-          echo "=== CHECK MAIN ==="
           grep -n "int main" source/main.c
 
-          echo "=== MAKE DRY RUN ==="
-          make -n clean
-          make -n V=1
+          echo "=== CHECK COMPILER ==="
+          arm-none-eabi-gcc --version
 
           echo "=== CLEAN ==="
           make clean
 
-          echo "=== BUILD ==="
-          make V=1 CC=arm-none-eabi-gcc LD=arm-none-eabi-gcc
+          echo "=== COMPILE ==="
+          make V=1 CC=arm-none-eabi-gcc
 
-          echo "=== OUTPUT ==="
+          echo "=== CHECK OUTPUT ==="
+          test -f PKHeX3DS.3dsx
           ls -lh PKHeX3DS.3dsx
 
       - name: Upload application
@@ -50,3 +45,4 @@ jobs:
         with:
           name: PKHeX3DS
           path: PKHeX3DS.3dsx
+          

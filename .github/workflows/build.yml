@@ -1,0 +1,33 @@
+name: Build PKHeX 3DS
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install devkitPro
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://apt.devkitpro.org/install-devkitpro-pacman
+          chmod +x install-devkitpro-pacman
+          sudo ./install-devkitpro-pacman
+          sudo dkp-pacman -S --noconfirm 3ds-dev
+
+      - name: Compile
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITARM=$DEVKITPRO/devkitARM
+          make
+
+      - name: Upload application
+        uses: actions/upload-artifact@v4
+        with:
+          name: PKHeX3DS
+          path: PKHeX3DS.3dsx

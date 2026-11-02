@@ -14,6 +14,6 @@ LDFLAGS := -specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*).map
 LIBS := -lctru
 .PHONY: all clean
 all: $(TARGET).3dsx
-include $(DEVKITPRO)/libctru/3ds_rules
+include $(DEVKITARM)/3ds_rules
 clean:
 	@rm -rf $(BUILD) $(TARGET).3dsx $(TARGET).elf $(TARGET).smdh

@@ -24,6 +24,14 @@ jobs:
         run: |
           export DEVKITPRO=/opt/devkitpro
           export DEVKITARM=$DEVKITPRO/devkitARM
+          export PATH="$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH"
+          export CC="$DEVKITARM/bin/arm-none-eabi-gcc
+          export CC="$DEVKITARM/bin/arm-none-eabi-gcc"
+          export CXX="$DEVKITARM/bin/arm-none-eabi-g++"
+          export AS="$DEVKITARM/bin/arm-none-eabi-as"
+          export LD="$DEVKITARM/bin/arm-none-eabi-gcc"
+          export AR="$DEVKITARM/bin/arm-none-eabi-ar"
+          export OBJCOPY="$DEVKITARM/bin/arm-none-eabi-objcopy"
           make
 
       - name: Upload application

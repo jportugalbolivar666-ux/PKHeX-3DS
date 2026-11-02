@@ -8,35 +8,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    container:
+      image: devkitpro/devkitarm:latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Download project
+        uses: actions/checkout@v4
 
-      - name: Install devkitPro
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget -U "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36" https://apt.devkitpro.org/install-devkitpro-pacman
-          chmod +x install-devkitpro-pacman
-          sudo ./install-devkitpro-pacman
-          sudo dkp-pacman -S --noconfirm 3ds-dev
-
-      - name: Compile
+      - name: Compile PKHeX
         shell: bash
         run: |
           export DEVKITPRO=/opt/devkitpro
-          export DEVKITARM=$DEVKITPRO/devkitARM
+          export DEVKITARM=/opt/devkitpro/devkitARM
           export PATH="$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH"
-          export CC="$DEVKITARM/bin/arm-none-eabi-gcc"
-          export CXX="$DEVKITARM/bin/arm-none-eabi-g++"
-          export AS="$DEVKITARM/bin/arm-none-eabi-as"
-          export LD="$DEVKITARM/bin/arm-none-eabi-gcc"
-          export AR="$DEVKITARM/bin/arm-none-eabi-ar"
-          export OBJCOPY="$DEVKITARM/bin/arm-none-eabi-objcopy"
-          make
+
+          if [ -f Makefile ]; then
+            DIR="."
+          elif [ -f PKHeX-3DS-Port-Starter/Makefile ]; then
+            DIR="PKHeX-3DS-Port-Starter"
+          else
+            echo "No se encuentra el Makefile"
+            exit 1
+          fi
+
+          make -C "$DIR"
+          echo "ARTIFACT_DIR=$DIR" >> "$GITHUB_ENV"
 
       - name: Upload application
         uses: actions/upload-artifact@v4
         with:
           name: PKHeX3DS
-          path: PKHeX3DS.3dsx
+          path: ${{ env.ARTIFACT_DIR }}/PKHeX3DS.3dsx
           

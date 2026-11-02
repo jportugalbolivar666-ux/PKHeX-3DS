@@ -1,4 +1,4 @@
-name: Build PKHeX 3DS
+wname: Build PKHeX 3DS
 
 on:
   workflow_dispatch:
@@ -31,7 +31,9 @@ jobs:
             exit 1
           fi
 
-          make -C "$DIR"
+          export CC="$DEVKITARM/bin/arm-none-eabi-gcc"
+          export LD="$DEVKITARM/bin/arm-none-eabi-gcc"
+          make -C "$DIR" CC="$CC" LD="$LD"
           echo "ARTIFACT_DIR=$DIR" >> "$GITHUB_ENV"
 
       - name: Upload application

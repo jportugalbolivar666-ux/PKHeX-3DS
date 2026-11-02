@@ -22,18 +22,25 @@ jobs:
           export DEVKITARM=/opt/devkitpro/devkitARM
           export PATH="$DEVKITARM/bin:$DEVKITPRO/tools/bin:$PATH"
 
+          echo "Comprobando compilador ARM..."
+          arm-none-eabi-gcc --version
+
+          echo "Comprobando libctru..."
+          ls -la "$DEVKITPRO/libctru/lib"
+
           if [ -f Makefile ]; then
             DIR="."
           elif [ -f PKHeX-3DS-Port-Starter/Makefile ]; then
             DIR="PKHeX-3DS-Port-Starter"
           else
-            echo "No se encuentra el Makefile"
+            echo "ERROR: No se encuentra el Makefile"
             exit 1
           fi
 
-          export CC="$DEVKITARM/bin/arm-none-eabi-gcc"
-          export LD="$DEVKITARM/bin/arm-none-eabi-gcc"
-          make -C "$DIR" CC="$CC" LD="$LD"
+          echo "Compilando proyecto..."
+          make -C "$DIR" clean || true
+          make -C "$DIR" CC=arm-none-eabi-gcc LD=arm-none-eabi-gcc
+
           echo "ARTIFACT_DIR=$DIR" >> "$GITHUB_ENV"
 
       - name: Upload application
